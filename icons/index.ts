@@ -1,0 +1,13 @@
+import Logo from "@/public/images/logo.png";
+import Search from "@/public/images/search.svg";
+import Login from "@/public/images/login.svg";
+import Signup from "@/public/images/signup.svg";
+import Logo2 from "@/public/images/logo2.png";
+
+export const Icons = {
+  Logo,
+  Search,
+  Login,
+  Signup,
+  Logo2,
+}
