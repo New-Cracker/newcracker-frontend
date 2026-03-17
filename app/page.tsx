@@ -43,7 +43,7 @@ export default function Home() {
           </div>
           <div className="w-full flex flex-col gap-4 lg:gap-8">
             <h2 className="text-red-800 font-bold text-lg md:text-xl">맞춤 트렌딩 요약</h2>
-            <div className="w-full h-48 md:h-70 bg-white border border-gray-300 ro]unded-2xl"></div>
+            <div className="w-full h-48 md:h-70 bg-white border border-gray-300 rounded-2xl"></div>
           </div>
         </div>
 
