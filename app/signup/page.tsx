@@ -43,14 +43,23 @@ export default function Signup() {
     if(!validate2()) return;
 
     try {
-      await API.post('/auth/signup', {
+      const response = await API.post('/auth/signup', {
         email,
         password,
         username,
         category
       });
       toast.success('회원가입이 완료되었습니다.');
-      router.push('/login');
+
+      const accessToken = response.data.accessToken;
+      const refreshToken = response.data.refreshToken;
+      const uname = response.data.username;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('username', uname);
+
+      router.push('/');
     } catch (err:any) {
       toast.error("회원가입에 실패했습니다.");
     }

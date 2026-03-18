@@ -23,9 +23,11 @@ export default function Login() {
 
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
+      const username = response.data.username;
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('username', username);
 
       router.push('/');
     } catch (err: unknown) {
