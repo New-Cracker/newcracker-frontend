@@ -2,11 +2,36 @@
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useState, useEffect } from 'react';
+import API from '@/lib/axios';
 import Slider from 'react-slick';
 import NewsItem from './components/NewsItem';
+import Image from 'next/image';
 import { News1, News2 } from '@/data/mockData';
 
+interface News {
+  category: string;
+  companyName: string;
+  link: string;
+  publicationDate: string;
+  summary: string;
+  title: string;
+  content: string;
+  thumbnailUrl?: string;
+}
+
+function SliderBox(imageUrl:string) {
+  return (
+    <div className='h-61 mb-5 rounded-[15px]'>
+      <Image src={imageUrl} alt="image" className="w-full"/>
+    </div>
+  )
+}
+
 export default function Home() {
+  const [newsList, setNewsList] = useState<News[]>([]);
+  const [username, setUsername] = useState('');
+
   const settings = {
     dots: true,
     infinite: true,
@@ -14,6 +39,17 @@ export default function Home() {
     slidesToShow: 1,
     slidesToScroll: 1
   };
+
+  useEffect(() => {
+    API.get('/news/latest').then(res => {
+      setNewsList(res.data)
+      console.log(res.data)
+    });
+  }, []);
+
+  useEffect(() => {
+    setUsername(localStorage.getItem('username') || '');
+  }, []);
 
   return (
     <div className="w-full min-h-screen py-35 flex flex-col items-center px-25">
@@ -48,11 +84,11 @@ export default function Home() {
         </div>
 
         <div className="w-full h-auto flex flex-col justify-between align-center mt-22 gap-13">
-          <p className="text-[20px] text-[#1c1c1c] font-bold">username님을 위한 최신 뉴스</p>
+          <p className="text-[20px] text-[#1c1c1c] font-bold">{username}님을 위한 최신 뉴스</p>
 
           <div className="w-full h-auto flex flex-col justify-center gap-10">
-            {News1.map((news, index) => (
-              <NewsItem key={index} source={news.source} title={news.title} content={news.content} imageUrl={news.imageUrl} />
+            {newsList.map((news, index) => (
+              <NewsItem key={index} source={news.companyName} title={news.title} content={news.summary} imageUrl={news.thumbnailUrl} />
             ))}
           </div>
         </div>
