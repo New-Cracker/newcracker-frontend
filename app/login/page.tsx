@@ -24,10 +24,12 @@ export default function Login() {
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
       const username = response.data.username;
+      const category  = response.data.category;
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('username', username);
+      localStorage.setItem('category', category);
 
       router.push('/');
     } catch (err: unknown) {

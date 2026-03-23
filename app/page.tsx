@@ -2,11 +2,53 @@
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useState, useEffect } from 'react';
+import API from '@/lib/axios';
 import Slider from 'react-slick';
 import NewsItem from './components/NewsItem';
-import { News1, News2 } from '@/data/mockData';
+import Image from 'next/image';
+import { News2 } from '@/data/mockData';
+
+interface News {
+  category: string;
+  companyName: string;
+  link: string;
+  publicationDate: string;
+  summary: string;
+  title: string;
+  content: string;
+  thumbnailUrl?: string;
+}
+
+function SliderBox(imageUrl: string) {
+  return (
+    <div className="h-61 mb-5 rounded-[15px]">
+      <Image src={imageUrl} alt="image" className="w-full" />
+    </div>
+  );
+}
+
+function NewsItemSkeleton() {
+  return (
+    <div className="w-full h-32 flex flex-row animate-pulse">
+      <div className="w-50 h-full bg-gray-200 rounded-md" />
+      <div className="w-full h-full px-5 flex flex-col justify-center gap-2">
+        <div className="w-20 h-3 bg-gray-200 rounded" />
+        <div className="w-3/4 h-5 bg-gray-200 rounded" />
+        <div className="w-full h-4 bg-gray-200 rounded" />
+        <div className="w-2/3 h-4 bg-gray-200 rounded" />
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
+  const [newsList, setNewsList] = useState<News[]>([]);
+  const [newsList2, setNewsList2] = useState<News[]>([]);
+  const [username, setUsername] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -14,6 +56,41 @@ export default function Home() {
     slidesToShow: 1,
     slidesToScroll: 1
   };
+
+  useEffect(() => {
+    const fetchLatestsNews = async () => {
+      try {
+        setLoading(true);
+        const res = await API.get('/news/latest');
+        setNewsList(res.data);
+      } catch (err: unknown) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLatestsNews();
+  }, []);
+
+  useEffect(() => {
+    const category = localStorage.getItem('category');
+    const fetchCategoryNews = async () => {
+      try {
+        setLoading2(true);
+        const res = await API.get(`/news/latest?category=${category}`);
+        setNewsList2(res.data);
+      } catch (err: unknown) {
+        console.log(err);
+      } finally {
+        setLoading2(false);
+      }
+    };
+    fetchCategoryNews();
+  }, []);
+
+  useEffect(() => {
+    setUsername(localStorage.getItem('username') || '');
+  }, []);
 
   return (
     <div className="w-full min-h-screen py-35 flex flex-col items-center px-25">
@@ -43,17 +120,25 @@ export default function Home() {
           </div>
           <div className="w-full flex flex-col gap-4 lg:gap-8">
             <h2 className="text-red-800 font-bold text-lg md:text-xl">맞춤 트렌딩 요약</h2>
-            <div className="w-full h-48 md:h-70 bg-white border border-gray-300 ro]unded-2xl"></div>
+            <div className="w-full h-48 md:h-70 bg-white border border-gray-300 rounded-2xl"></div>
           </div>
         </div>
 
         <div className="w-full h-auto flex flex-col justify-between align-center mt-22 gap-13">
-          <p className="text-[20px] text-[#1c1c1c] font-bold">username님을 위한 최신 뉴스</p>
+          <p className="text-[20px] text-[#1c1c1c] font-bold">{username}님을 위한 최신 뉴스</p>
 
           <div className="w-full h-auto flex flex-col justify-center gap-10">
-            {News1.map((news, index) => (
-              <NewsItem key={index} source={news.source} title={news.title} content={news.content} imageUrl={news.imageUrl} />
-            ))}
+            {loading2 ? (
+              <>
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+              </>
+            ) : (
+              newsList2.map((news, index) => <NewsItem key={index} source={news.companyName} title={news.title} content={news.summary} imageUrl={news.thumbnailUrl} />)
+            )}
           </div>
         </div>
 
@@ -61,9 +146,17 @@ export default function Home() {
           <p className="text-[20px] text-[#1c1c1c] font-bold">따끈따끈한 이슈</p>
 
           <div className="w-full h-auto flex flex-col justify-center gap-10">
-            {News2.map((news, index) => (
-              <NewsItem key={index} source={news.source} title={news.title} content={news.content} imageUrl={news.imageUrl} />
-            ))}
+            {loading ? (
+              <>
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+                <NewsItemSkeleton />
+              </>
+            ) : (
+              newsList.map((news, index) => <NewsItem key={index} source={news.companyName} title={news.title} content={news.summary} imageUrl={news.thumbnailUrl} />)
+            )}
           </div>
         </div>
       </div>

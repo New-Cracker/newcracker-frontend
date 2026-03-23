@@ -53,11 +53,13 @@ export default function Signup() {
 
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
-      const uname = response.data.username;
+      const usernameData = response.data.username;
+      const categoryData = response.data.category;
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('username', uname);
+      localStorage.setItem('username', usernameData);
+      localStorage.setItem('category', categoryData);
 
       router.push('/');
     } catch (err:any) {
