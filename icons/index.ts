@@ -4,6 +4,7 @@ import Login from "@/public/images/login.svg";
 import Signup from "@/public/images/signup.svg";
 import User from "@/public/images/user.svg"
 import Logo2 from "@/public/images/logo2.png";
+import Pen from "@/public/images/pen.svg";
 
 export const Icons = {
   Logo,
@@ -12,4 +13,5 @@ export const Icons = {
   Signup,
   User,
   Logo2,
+  Pen,
 }
